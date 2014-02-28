@@ -2,7 +2,7 @@
 in vec4 qt_Vertex;
 
 uniform vec2 Elim=vec2(0,0.1); //energy in GeV
-uniform vec2 Llim=vec2(0,100); //L in KM
+uniform vec2 Llim=vec2(500,5000); //L in KM
 uniform mat4 V; //PMNS matrix
 uniform int nu_alpha=0; //nu_e,nu_mu,nu_tau
 

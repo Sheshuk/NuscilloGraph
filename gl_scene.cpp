@@ -6,28 +6,61 @@ GL_scene::GL_scene(QWidget *parent) :
 }
 //setter slots:
 void GL_scene::set_Llims(double L0, double L1){
+  if(prog==NULL)return;
   prog->setUniformValue("Llims",float(L0),float(L1));
   repaint();
-};
+}
 void GL_scene::set_Elims(double E0, double E1){
+  if(prog==NULL)return;
   prog->setUniformValue("Elims",float(E0),float(E1));
   repaint();
-};
-void GL_scene::set_dm2   (double val){
-  prog->setUniformValue("dm2",float(val));
+}
+
+void GL_scene::set_th12(double val){
+  Rz12.setToIdentity();
+  Rz12.rotate(val,0,0,1);
+  upd_V();
+}
+
+void GL_scene::set_th23(double val){
+  Rx23.setToIdentity();
+  Rx23.rotate(val,1,0,0);
+  upd_V();
+}
+
+void GL_scene::set_th13(double val){
+  Ry13.setToIdentity();
+  Ry13.rotate(val,0,1,0);
+  upd_V();
+}
+
+void GL_scene::upd_dm(){
+  if(prog==NULL)return;
+  prog->setUniformValue("dm2",dm2[0],dm2[1],dm2[2]);
   repaint();
-};
-void GL_scene::set_sin2th(double val){
-  prog->setUniformValue("Sin2Th",float(val));
+}
+
+void GL_scene::set_nu_alpha(int nu_alpha){
+  if(prog==NULL)return;
+  prog->setUniformValue("nu_alpha",nu_alpha);
   repaint();
-};
+}
+
+void GL_scene::upd_V(){
+  if(prog==NULL)return;
+  V=Rx23*Ry13*Rz12;
+  prog->setUniformValue("V",V);
+  repaint();
+  emit V_changed(V);
+}
+
 //----------------------------------------
 void GL_scene::initializeGL(){
   glClearColor(0.0, 0.0, 0.2, 0.0);
   glEnable(GL_DEPTH_TEST);
   prog=new QGLShaderProgram();
-  prog->addShaderFromSourceFile(QGLShader::Vertex,  "../NuOsc/shader/nuosc.vert");
-  prog->addShaderFromSourceFile(QGLShader::Fragment,"../NuOsc/shader/nuosc.frag");
+  prog->addShaderFromSourceFile(QGLShader::Vertex,  "shader/nuosc3.vert");
+  prog->addShaderFromSourceFile(QGLShader::Fragment,"shader/nuosc3.frag");
   printf("Shaders are %s\n",prog->hasOpenGLShaderPrograms()?"ENABLED":"disabled");
   if(prog->link()==false){
       QErrorMessage* msg=new QErrorMessage();
@@ -36,6 +69,8 @@ void GL_scene::initializeGL(){
       msg->show();
     }
   prog->bind();
+  upd_dm();
+  upd_V();
 }
 
 void GL_scene::resizeGL(int w, int h){

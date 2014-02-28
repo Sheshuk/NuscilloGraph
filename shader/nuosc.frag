@@ -4,7 +4,7 @@ varying float E,L;
 const vec4 c0=vec4(0,0,0,1);
 const vec4 c1=vec4(0,1,0,1);
 //input variables
-uniform float dm2= 3.2e-3; //eV^2
+uniform vec3 dm2=vec3(7.59e-5, 2.4e-3, 2.4e-3); //dm21, dm32, dm32, eV^2
 uniform float Sin2Th=1;  //mixing angle
 
 vec3 CalcProb(float l, float e){
