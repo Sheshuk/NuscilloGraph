@@ -1,5 +1,21 @@
 #include "gl_scene.h"
 #include <QErrorMessage>
+
+QGLShaderProgram* MakeProgram(const char* vshade, const char* fshade){
+  QGLShaderProgram* prog=new QGLShaderProgram();
+  prog->addShaderFromSourceFile(QGLShader::Vertex,   vshade);
+  prog->addShaderFromSourceFile(QGLShader::Fragment, fshade);
+  printf("Shaders are %s\n",prog->hasOpenGLShaderPrograms()?"ENABLED":"disabled");
+  if(prog->link()==false){
+      QErrorMessage* msg=new QErrorMessage();
+      printf("LOG: %s\n",prog->log().data_ptr());
+      msg->showMessage(prog->log()+" end_Log");
+      msg->show();
+    }
+  prog->bind();
+  return prog;
+}
+
 GL_scene::GL_scene(QWidget *parent) :
   QGLWidget(parent),prog(0)
 {
@@ -58,17 +74,8 @@ void GL_scene::upd_V(){
 void GL_scene::initializeGL(){
   glClearColor(0.0, 0.0, 0.2, 0.0);
   glEnable(GL_DEPTH_TEST);
-  prog=new QGLShaderProgram();
-  prog->addShaderFromSourceFile(QGLShader::Vertex,  "shader/nuosc3.vert");
-  prog->addShaderFromSourceFile(QGLShader::Fragment,"shader/nuosc3.frag");
-  printf("Shaders are %s\n",prog->hasOpenGLShaderPrograms()?"ENABLED":"disabled");
-  if(prog->link()==false){
-      QErrorMessage* msg=new QErrorMessage();
-      printf("LOG: %s\n",prog->log().data_ptr());
-      msg->showMessage(prog->log()+" end_Log");
-      msg->show();
-    }
-  prog->bind();
+  prog=MakeProgram("shader/nuosc3.v120","shader/nuosc3.f120");
+//  prog=MakeProgram("shader/nuosc3.vert","shader/nuosc3.frag");
   upd_dm();
   upd_V();
 }

@@ -1,0 +1,38 @@
+#version 120
+
+varying float E,L;
+
+const vec4 c0=vec4(0,0,0,1);
+const vec4 c1=vec4(0,1,0,1);
+//input variables
+uniform vec3 dm2=vec3(7.59e-5, 2.4e-3, 2.4e-3); //dm21, dm31, dm32, eV^2
+uniform int nu_alpha=0; //nu_e,nu_mu,nu_tau
+varying float w[9];
+
+
+vec3 CalcProb(float l, float e){
+    vec3 SinF=sin((1.267*dm2*L)/E);
+    SinF=SinF*SinF;
+    mat3 F=mat3(0.0);
+    F[1][0]=SinF[0];
+    F[2][0]=SinF[1];
+    F[2][1]=SinF[2];
+
+    vec3 Prob=vec3(0.0);
+
+    for(int beta=0;beta<3;++beta)
+        for(int j=0;j<3;++j)
+            for(int i=0;i<3;++i)
+                Prob[beta]+=-4*w[beta*3+i]*F[i][j]*w[beta*3+j];
+
+    return Prob;
+}
+
+void main(void)
+{
+    vec3 prob=CalcProb(L,E);
+    float dl=0.5*dFdx(L);
+    float de=0.5*dFdy(E);
+    prob[nu_alpha]+=1.0;
+    gl_FragColor =vec4(prob,1);
+}

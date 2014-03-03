@@ -25,10 +25,10 @@ void main(void)
 //        Prob=Prob+CalcProb(L,E);
 //    }
 //    Prob=Prob/N;
-    Prob=Prob+CalcProb(L+dl,E  );
-    Prob=Prob+CalcProb(L-dl,E  );
-    Prob=Prob+CalcProb(L   ,E+de);
-    Prob=Prob+CalcProb(L   ,E-de);
-    Prob=Prob/4.0;
+    // Prob=Prob+CalcProb(L+dl,E  );
+    // Prob=Prob+CalcProb(L-dl,E  );
+    // Prob=Prob+CalcProb(L   ,E+de);
+    // Prob=Prob+CalcProb(L   ,E-de);
+    // Prob=Prob/4.0;
     gl_FragColor = vec4(Prob.x,Prob.y,Prob.z,1);
 }
