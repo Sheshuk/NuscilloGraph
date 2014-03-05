@@ -17,20 +17,12 @@ QGLShaderProgram* MakeProgram(const char* vshade, const char* fshade){
 }
 
 GL_scene::GL_scene(QWidget *parent) :
-  QGLWidget(parent),prog(0)
+    QGLWidget(parent),nu_alpha(0),prog(0)
 {
+    Elims[0]=0; Elims[1]=100;
+    Llims[0]=100; Llims[1]=1000;
 }
 //setter slots:
-void GL_scene::set_Llims(double L0, double L1){
-  if(prog==NULL)return;
-  prog->setUniformValue("Llims",float(L0),float(L1));
-  repaint();
-}
-void GL_scene::set_Elims(double E0, double E1){
-  if(prog==NULL)return;
-  prog->setUniformValue("Elims",float(E0),float(E1));
-  repaint();
-}
 
 void GL_scene::set_th12(double val){
   Rz12.setToIdentity();
@@ -56,18 +48,37 @@ void GL_scene::upd_dm(){
   repaint();
 }
 
-void GL_scene::set_nu_alpha(int nu_alpha){
+void GL_scene::set_nu_alpha(int NuAlpha){
+  nu_alpha=NuAlpha;
   if(prog==NULL)return;
   prog->setUniformValue("nu_alpha",nu_alpha);
-  repaint();
+  upd_V();
 }
 
 void GL_scene::upd_V(){
   if(prog==NULL)return;
   V=Rx23*Ry13*Rz12;
-  prog->setUniformValue("V",V);
+  QMatrix3x3 w;
+    for(int nu_beta=0; nu_beta<3; nu_beta++)
+       for(int i=0;i<3; i++)
+           w (i,nu_beta)=V(nu_alpha,i)*V(nu_beta,i);
+
+
+  prog->setUniformValue("w",w);
   repaint();
   emit V_changed(V);
+}
+
+void GL_scene::upd_Llim(){
+  if(prog==NULL)return;
+  prog->setUniformValue("Llim",Llims[0],Llims[1]);
+  printf("l=[%f %f]\n",Llims[0],Llims[1]);
+  repaint();
+}
+void GL_scene::upd_Elim(){
+  if(prog==NULL)return;
+  prog->setUniformValue("Elim",Elims[0]*1e-3,Elims[1]*1e-3);
+  repaint();
 }
 
 //----------------------------------------
@@ -78,6 +89,8 @@ void GL_scene::initializeGL(){
 //  prog=MakeProgram("shader/nuosc3.vert","shader/nuosc3.frag");
   upd_dm();
   upd_V();
+  upd_Llim();
+  upd_Elim();
 }
 
 void GL_scene::resizeGL(int w, int h){

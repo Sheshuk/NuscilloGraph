@@ -25,5 +25,7 @@ HEADERS  += nuoscwindow.h \
 OTHER_FILES += \
     shader/nuosc3.frag \
     shader/nuosc3.vert \
+    shader/nuosc3.f120 \
+    shader/nuosc3.v120 \
     shader/nuosc.frag \
     shader/nuosc.vert

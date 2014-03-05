@@ -19,9 +19,9 @@ NuOscWindow::NuOscWindow(QWidget *parent)
   setWindowTitle(tr("NUScilloScope"));
   Display=new GL_scene();
   setCentralWidget(Display);
-  setMinimumSize(400,400);
+  setMinimumSize(800,400);
   addDockWidget(Qt::LeftDockWidgetArea,make_osc_box());
-  addDockWidget(Qt::RightDockWidgetArea,make_lim_box());
+  addDockWidget(Qt::BottomDockWidgetArea,make_lim_box());
 }
 
 NuOscWindow::~NuOscWindow()
@@ -31,6 +31,53 @@ NuOscWindow::~NuOscWindow()
 
 QDockWidget *NuOscWindow::make_lim_box(){
   LimBox=new QDockWidget("Limits");
+  QGroupBox* grp=new QGroupBox();
+  LimBox->setWidget(grp);
+  QGridLayout* grid=new QGridLayout();
+
+  //---------- Emin -----------
+  QDoubleSpinBox* Emin=new QDoubleSpinBox();
+  Emin->setPrefix(tr("Emin= "));
+  Emin->setSuffix(tr(" MeV"));
+  Emin->setDecimals(3);
+  Emin->setMinimum( 0);
+  Emin->setMaximum(1000);
+  connect(Emin,SIGNAL(valueChanged(double)),Display,SLOT(set_Emin(double)));
+  //---------- Emax -----------
+  QDoubleSpinBox* Emax=new QDoubleSpinBox();
+  Emax->setPrefix(tr("Emax= "));
+  Emax->setSuffix(tr(" MeV"));
+  Emax->setDecimals(3);
+  Emax->setMinimum( 0);
+  Emax->setMaximum(1000);
+  connect(Emax,SIGNAL(valueChanged(double)),Display,SLOT(set_Emax(double)));
+  //---------- Lmin -----------
+  QDoubleSpinBox* Lmin=new QDoubleSpinBox();
+  Lmin->setPrefix(tr("Lmin= "));
+  Lmin->setSuffix(tr(" km"));
+  Lmin->setDecimals(3);
+  Lmin->setMinimum( 0);
+  Lmin->setMaximum(10000);
+  connect(Lmin,SIGNAL(valueChanged(double)),Display,SLOT(set_Lmin(double)));
+  //---------- Lmax -----------
+  QDoubleSpinBox* Lmax=new QDoubleSpinBox();
+  Lmax->setPrefix(tr("Lmax= "));
+  Lmax->setSuffix(tr(" km"));
+  Lmax->setDecimals(3);
+  Lmax->setMinimum( 0);
+  Lmax->setMaximum(10000);
+  connect(Lmax,SIGNAL(valueChanged(double)),Display,SLOT(set_Lmax(double)));
+
+
+  Emin->setValue(0);
+  Emax->setValue(100);
+  Lmin->setValue(100);
+  Lmax->setValue(1000);
+  grid->addWidget(Emin,0,0);
+  grid->addWidget(Emax,0,1);
+  grid->addWidget(Lmin,1,0);
+  grid->addWidget(Lmax,1,1);
+  grp->setLayout(grid);
   return LimBox;
 }
 
