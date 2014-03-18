@@ -15,12 +15,17 @@ TEMPLATE = app
 SOURCES += main.cpp\
         nuoscwindow.cpp \
     gl_scene.cpp \
-    matrixwidget.cpp
+    matrixwidget.cpp \
+    expedit.cpp \
+    mathutf.cpp
+
 
 HEADERS  += nuoscwindow.h \
     gl_scene.h \
     Mcomplex.h \
-    matrixwidget.h
+    matrixwidget.h \
+    expedit.h \
+    mathutf.h
 
 OTHER_FILES += \
     shader/nuosc3.frag \

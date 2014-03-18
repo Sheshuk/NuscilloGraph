@@ -16,6 +16,7 @@ protected:
 signals:
   void dm23_changed(double);
   void V_changed(QMatrix4x4&);
+  void V_changed(QMatrix4x4&,QMatrix4x4&);
 public slots:
   void set_Emin(double val){Elims[0]=float(val); upd_Elim();}
   void set_Emax(double val){Elims[1]=float(val); upd_Elim();}
@@ -48,7 +49,7 @@ private:
   float Elims[2];
   float Llims[2];
   QGLShaderProgram *prog;
-  QMatrix4x4 V; //PMNS
+  QMatrix4x4 ReV, ImV; //PMNS
   //MComplex Gd, Gm;
   QMatrix4x4 Rx23,Ry13,Rz12;
   bool NH; //normal hierarchy;

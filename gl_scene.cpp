@@ -57,16 +57,17 @@ void GL_scene::set_nu_alpha(int NuAlpha){
 
 void GL_scene::upd_V(){
   if(prog==NULL)return;
-  V=Rx23*Ry13*Rz12;
+  ReV=Rx23*Ry13*Rz12;
+//  ImV= ...;
   QMatrix3x3 w;
     for(int nu_beta=0; nu_beta<3; nu_beta++)
        for(int i=0;i<3; i++)
-           w (i,nu_beta)=V(nu_alpha,i)*V(nu_beta,i);
+           w (i,nu_beta)=ReV(nu_alpha,i)*ReV(nu_beta,i);
 
 
   prog->setUniformValue("w",w);
   repaint();
-  emit V_changed(V);
+  V_changed(ReV);
 }
 
 void GL_scene::upd_Llim(){

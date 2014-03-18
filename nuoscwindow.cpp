@@ -10,9 +10,9 @@
 #include "nuoscwindow.h"
 #include "gl_scene.h"
 #include "matrixwidget.h"
-const char* _delta_="\xCE\x94";
-const char* _theta_="\xCE\xB8";
-const char* _sqr_="\xC2\xB2";
+#include "expedit.h"
+#include "mathutf.h"
+
 NuOscWindow::NuOscWindow(QWidget *parent)
   : QMainWindow(parent)
 {
@@ -174,9 +174,14 @@ QDockWidget *NuOscWindow::make_osc_box(){
    nu_alpha->addItem(tr("\xCE\xBD_\xCF\x84"));
    connect(nu_alpha,SIGNAL(currentIndexChanged(int)),Display,SLOT(set_nu_alpha(int)));
    vb->addWidget(nu_alpha);
+
+   ExpEdit* eedit1=new ExpEdit(QString(utf::greek::kDELTA)+"m"+utf::Sup('2')+utf::Sub("12")+"=","eV"+utf::Sup("2"),this);
+   eedit1->setMantiss(2.5);
+   eedit1->setExponent(-5);
+   vb->addWidget(eedit1);
    vb->addStretch(1);
 
-   MatrixWidget* matr=new MatrixWidget();
+   MatrixWidget* matr=new MatrixWidget("PMNS matrix");
    connect(Display,SIGNAL(V_changed(QMatrix4x4&)),matr,SLOT(set_matrix(QMatrix4x4&)));
    vb->addWidget(matr);
    return OscBox;
